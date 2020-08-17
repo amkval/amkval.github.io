@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<!-- Anders Martin Kval -->
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+      
+      body{
+        font-family: "Arial Black";
+        background-color: whitesmoke;
+      }
+      input{
+        height: 20px;
+      }
+      .txt{
+        font-size: 30px;
+      }
+      .btn{
+        background-color: chartreuse;
+        width: 100%;
+        border: 0px;
+        --margin-top: 10px;
+        --border-radius: 5px;
+        color: white;
+        font-family: "Arial Black";
+        font-size: 50px;
+      }
+      
+    </style>
+  </head>
+  <body>
+    <h1>The Advetures of the Potatomafia</h1>
+    <p id="txtQuest" class="txt"></p>
+    <p id="btn0" class="btn"></p>
+    <p id="btn1" class="btn"></p>
+    <p id="btn2" class="btn"></p>
+    <script>
+      var quest = 0;
+      var name;
+      var questArray = [
+        {
+          txt: "Hvilket mafiamedlem er du?", 
+          options: ["Morten","Gilbu","Machom"], 
+          next: [1,1,1],
+          rename: true
+        },
+        {
+          txt: "Mafianen har et gissel til overs fra et ran, hva skal vi gjøre med ham?", 
+          options: ["Skyte ham", "Chicagotøfler", "Slippe ham fri"],
+          next: [2,5,4]
+        },
+        {
+          txt: "Du trenger et våpen",
+          options: ["Hagla", "Bazokan til Phillip"],
+          next: [3,11]
+        },
+        {
+          txt: "Du skyter ham i hodet, men nå må du bli kvitt liket, hva gjør du?",
+          options: ["Grav det ned i hagen", "Grav det ned i hagen til naboen", "kast det på sjøen"],
+          next: [4,13,18]
+        },
+        {
+          txt: "- Gudfaderen: Har du lyst til å bli tatt eller?<br>*Du ble drept av dine egene*",
+          options: ["Start på nytt"],
+          next: [0],
+          reload: true
+        },
+        {
+          txt: "- Gudfaderen: Du trenger sement og en bøtte!",
+          options: ["Gå til butikken", "Stjel fra naboen"],
+          next: [4,6]
+        },
+        {
+          txt: "Hvor oppbevarer naboen sement og bøtter?",
+          options: ["Kjøkkenet!", "Kjelleren!", "Skjulet!"],
+          next: [7,23,23]
+        },
+        {
+          txt: "- "+name+": Oisan der var han jo(Naboen)<br>Hva skal du gjøre med ham?",
+          options: ["Skyt ham!", "Unskyld deg"],
+          next: [8,4]
+        },
+        {
+          txt: "- "+name+": Potetstappe! Hva skal jeg gjøre nå?",
+          options: ["Dumpe han sammen med gisselet", "Brenne ned huset"],
+          next: [22,9]
+        },
+        {
+          txt: "- Onkel Politi: Henna i været din feite gris!<br> Hva skal du gjøre nå?",
+          options: ["Skyt ham!", "DET BRENNER!!!"],
+          next: [10,16]
+        },
+        {
+          txt: "*BLAM!*<br>Du bommet!<br>*Du ble drept av politiet*",
+          options: ["Start på nytt"],
+          next: [0],
+          reload: true
+        },
+        {
+          txt: "*BLAM!*<br>Du er nå en heldig basengeier!",
+          options: ["Gå videre"],
+          next: [12]
+        },
+        {
+          txt: name+" Har vunnet spillet!<br>11 tonn poteter til "+name,
+          options: ["Start på nytt"],
+          next: [0],
+          reload: true
+        },
+        {
+          txt: "- Naboen: Hva i potetmos er det dere driver med?",
+          options: ["Skyt ham"],
+          next: [14]
+        },
+        {
+          txt: "Hva skal du gjøre med liket?",
+          options: ["Dumpe han sammen med gisselet"],
+          next: [15]
+        },
+        {
+          txt: "*Du graver ned liket*",
+          options: ["Gå videre"],
+          next: [12]
+        },
+        {
+          txt: "*Onkel politi er distrahert*<br>Hva gjør du nå?",
+          options: ["Skyt ham!"],
+          next: [17]
+        },
+        {
+          txt: "*BLAM!*<br>*Du drepte politimannen*<br>*Du dumper ham i flammene sammen med liket og gisselet*",
+          options: ["Gå videre"],
+          next: [12]
+        },
+        {
+          txt: "*Du putter liket i en pose og bærer det over gårdsplassen til bilen din*<br>- Onkel Politi: Henda i været!<br>- Onkel Politi: Hva har du i posen?",
+          options: ["Hageavfall", "Uh, umh, øh"],
+          next: [19,20]
+        },
+        {
+          txt: "- Onkel Politi: Okay, kjør på",
+          options: ["Gå videre"],
+          next: [21]
+        },
+        {
+          txt: "*Bom! du ble drept av politiet*",
+          options: ["Start på nytt"],
+          next: [0],
+          reload: true
+        },
+        {
+          txt: "*Du dumper liket i havet*",
+          options: ["Gå videre"],
+          next: [12]
+        },
+        {
+          txt: "Det var verken sement eller bøtter på kjøkkenet, hvor går du nå?",
+          options: ["Sjulet", "Kjelleren"],
+          next: [23,23]
+        },
+        {
+          txt: "*Du fant sement og bøtte*",
+          options: ["Gå videre"],
+          next: [24]
+        },
+        {
+          txt: "Du har nå blitt kvitt bevisene",
+          options: ["Gå videre"],
+          next: [12]
+        }
+      ];
+      
+      setup();
+      
+      function setup(){
+        txtQuest.innerHTML = questArray[quest].txt;
+        var buttonArray = ["btn0", "btn1", "btn2"];
+        for(var i = 0; i < questArray[quest].options.length; i++){
+          document.getElementById(buttonArray[i]).innerHTML = questArray[quest].options[i];
+        }
+      }
+      
+      function draw(){
+        txtQuest.innerHTML = questArray[quest].txt;
+        var buttonArray = ["btn0", "btn1", "btn2"];
+        for(var i = 0; i < questArray[quest].options.length; i++){
+          document.getElementById(buttonArray[i]).hidden = false;
+          document.getElementById(buttonArray[i]).innerHTML = questArray[quest].options[i];
+        }
+        for(var i = buttonArray.length-1; i > questArray[quest].options.length-1; i--){
+         document.getElementById(buttonArray[i]).hidden = true;
+        }
+      }
+      
+      btn0.onclick = btn1.onclick = btn2.onclick = function(){
+        var current = questArray[quest];
+        if(current.rename != null){
+          name = current.options[this.id.charAt(3)];
+          console.log(name);
+        }
+        if(current.reload != null){
+          location.reload();
+        }
+        quest = current.next[this.id.charAt(3)];
+        draw();
+      }
+      
+    </script>
+  </body>
+</html>
