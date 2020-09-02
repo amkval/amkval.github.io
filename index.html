@@ -6,215 +6,61 @@
         <link rel="stylesheet" href="styles.css" />
     </head>
     <body>
-        <div class="editor">
-            <div class="header">
-                <p class="left">Edit</p>
-                <p class="left">Selection</p>
-                <p class="left">View</p>
-                <p class="left">Go</p>
-                <p class="left">Run</p>
-                <p class="left">Terminal</p>
-                <p class="left">Help</p>
-            </div>
-            <div class="mid">
-                <div class="activitybar">
-                </div>
-                <div class="explorer">
-                    <p>Explorer</p>
-                    <p>silly.txt</p>
-                    <p>×</p>
-                </div>
-                <div class="codebox">
-                    <div
-                        class="editspace"
-                        id="edit"
-                        autofocus
-                        contenteditable="true"
-                        draggable="false"
-                    ></div>
-                    <span
-                        class="codespace"
-                        id="display"
-                        contenteditable="false"
-                        draggable="false"
-                    ></span>
-                </div>
-            </div>
-            <div class="statusbar">
-                <p class="right">HTML</p>
-                <p class="right">CRLF</p>
-                <p class="right">UTF-8</p>
-                <p class="right">Spaces</p>
-                <p class="right">Col 44</p>
-                <p class="right">Ln 59</p>
-            </div>
-        </div>
-
-        <script>
-            var edit = document.getElementById("edit");
-            var ctrl = false;
-            var shift = false;
-            var prefix = true;
-            var indentcounter = 0;
-
-            edit.onkeydown = function (e) {
-                switch (e.which) {
-                    case 9: // Simple tab
-                        e.preventDefault();
-                        _insert_tab(e, (inverted = shift));
-                        if (shift) {
-                            if (indentcounter > 0) indentcounter--;
-                        } else {
-                            indentcounter++;
-                        }
-                        break;
-                    case 16: // Toggle shift
-                        shift = true;
-                        break;
-                    case 17: // Toggle control
-                        ctrl = true;
-                        break;
-                    case 83: // Prevent save promt!
-                        if (ctrl) {
-                            e.preventDefault();
-                        }
-                        break;
-                    case 13:
-                        e.preventDefault();
-                        var range = document.createRange();
-                        var selection = document.getSelection();
-                        var current = selection.anchorOffset;
-                        var end = selection.anchorNode.textContent.length;
-
-                        selection.anchorNode.textContent =
-                            selection.anchorNode.textContent.substring(
-                                0,
-                                current
-                            ) +
-                            "\n".repeat(end == current ? 2 : 1) +
-                            selection.anchorNode.textContent.substring(current);
-                        var node =
-                            selection.anchorNode.nodeType == 3
-                                ? selection.anchorNode
-                                : selection.anchorNode.firstChild;
-                        range.setStart(node, current + 1);
-                        range.collapse(true);
-                        selection.removeAllRanges();
-                        selection.addRange(range);
-                        break;
-                }
-                console.log("Pressed: ", e.which);
-                //console.log("shift:", shift);
-                //console.log("ctrl:", ctrl);
-                _update(e);
-            };
-
-            edit.onkeyup = function (e) {
-                switch (e.which) {
-                    case 16: // Toggle shift
-                        console.log("Here");
-                        shift = false;
-                        break;
-                    case 17: // Toggle control
-                        console.log("There");
-                        ctrl = false;
-                        break;
-                    case 13:
-                        console.log(indentcounter);
-                        for (var i = 0; i < indentcounter; i++) {
-                            console.log(i, indentcounter);
-                            _insert_tab(e, (inverted = false));
-                        }
-                        break;
-                }
-                //console.log("shift:", shift);
-                //console.log("ctrl:", ctrl);
-                _update(edit.innerHTML);
-            };
-
-            edit.onblur = function (e) {
-                console.log("Blur!", e);
-            };
-
-            function _update(e) {
-                var selection = document.getSelection();
-                var current = selection.anchorOffset;
-                display.innerHTML =
-                    edit.innerHTML.substring(0, current) +
-                    "<input width='auto' class='blinky' type='textarea' value='' id='blinkyboy'/>" +
-                    edit.innerHTML.substring(current);
-                blinkyboy.style.borderColor = '#'+Math.random().toString(16).substr(-6);
-            }
-
-            function _insert_tab(e, inverted = false) {
-                var range = document.createRange();
-                var selection = document.getSelection();
-                var current = selection.anchorOffset;
-                var indent_size = 4;
-                var indent = 0;
-
-                if (inverted) {
-                    let whitespaces = 0;
-                    indent =
-                        current == 0
-                            ? 0
-                            : Math.floor(current / indent_size - 0.01) *
-                                  indent_size -
-                              current;
-
-                    var wscounter = 1;
-
-                    while (wscounter != Math.abs(indent) + 1) {
-                        if (
-                            selection.anchorNode.textContent.charAt(
-                                current - wscounter
-                            ) == " "
-                        ) {
-                            whitespaces++;
-                            wscounter++;
-                        } else {
-                            wscounter = Math.abs(indent) + 1;
-                        }
-                    }
-                    console.log(indent, current, whitespaces);
-                    console.log(
-                        selection.anchorNode.textContent.substring(
-                            0,
-                            current - whitespaces
-                        )
-                    );
-                    console.log(
-                        selection.anchorNode.textContent.substring(current)
-                    );
-                    selection.anchorNode.textContent =
-                        selection.anchorNode.textContent.substring(
-                            0,
-                            current - whitespaces
-                        ) + selection.anchorNode.textContent.substring(current);
-                } else {
-                    indent =
-                        Math.ceil(current / indent_size + 0.01) * indent_size -
-                        current;
-                    selection.anchorNode.textContent =
-                        selection.anchorNode.textContent.substring(0, current) +
-                        " ".repeat(indent) +
-                        selection.anchorNode.textContent.substring(current);
-                }
-
-                //console.log(selection);
-                // get child in case focus node is not text
-                var node =
-                    selection.anchorNode.nodeType == 3 || inverted
-                        ? selection.anchorNode
-                        : selection.anchorNode.firstChild;
-                //console.log(node);
-
-                //console.log("current + indent: ", current, "+", indent);
-                range.setStart(node, current + indent);
-                range.collapse(true);
-                selection.removeAllRanges();
-                selection.addRange(range);
-            }
-        </script>
+        <div id="display"></div>
     </body>
+    <script>
+        var offsetWidth = (getWidth()/2) - 32;
+        var offsetHeight = (getHeight()/2)  - 32;
+        var earth_x = 0;
+        var earth_y = 0;
+        var moon_x = 0;
+        var moon_y = 0;
+
+        display.innerHTML += "<button style='left:"+ offsetWidth +"px;top:"+ offsetHeight +"px;font-size: 4em;'>☀️</button>";
+        display.innerHTML += "<button id='earth' style='left:"+ offsetWidth +"px;top:"+ offsetHeight +"px;font-size: 3em;'>🌍</button>";
+        display.innerHTML += "<button id='moon' style='left:"+ offsetWidth +"px;top:"+ offsetHeight +"px;font-size: 2em;'>🌑</button>";
+
+        var earth_counter = 0.;
+        var moon_counter = 0.;
+        console.log("x: " + earth_x + ", y: " + earth_y);
+        console.log("offW: " + offsetWidth + ", offH: " + offsetHeight);
+
+
+        function loop() {
+            earth_x = Math.sin(earth_counter)*300;
+            earth_y = Math.cos(earth_counter)*300;
+            moon_x = Math.sin(moon_counter)*100;
+            moon_y = Math.cos(moon_counter)*100;
+            earth.style.left = offsetWidth + earth_x + "px";
+            earth.style.top = offsetHeight + earth_y + "px";
+            moon.style.left = offsetWidth + earth_x + moon_x + "px";
+            moon.style.top = offsetHeight + earth_y + moon_y + "px";
+            window.requestAnimationFrame(loop);
+            earth_counter += 0.01;
+            moon_counter += 0.02;
+        }
+
+        window.requestAnimationFrame(loop);
+
+        // Stolen from Stackoverflow https://stackoverflow.com/questions/1038727/how-to-get-browser-width-using-javascript-code
+        function getWidth() {
+            return Math.max(
+                document.body.scrollWidth,
+                document.documentElement.scrollWidth,
+                document.body.offsetWidth,
+                document.documentElement.offsetWidth,
+                document.documentElement.clientWidth
+            );
+        }
+
+        function getHeight() {
+            return Math.max(
+                document.body.scrollHeight,
+                document.documentElement.scrollHeight,
+                document.body.offsetHeight,
+                document.documentElement.offsetHeight,
+                document.documentElement.clientHeight
+            );
+        }
+    </script>
 </html>
