@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Monkey Fireplace Regulations Certificate</title>
+        <style>
+            html {
+                background: url(src/background.jpg) no-repeat center center
+                    fixed;
+                -webkit-background-size: cover;
+                -moz-background-size: cover;
+                -o-background-size: cover;
+                background-size: cover;
+            }
+            body {
+                user-select: none;
+            }
+            img {
+                position: absolute;
+            }
+        </style>
+    </head>
+    <body>
+        <div>
+            <img src="src/page_1.png" id="page" draggable="false" />
+            <img
+                src="src/clear_arrow_left.png"
+                id="left"
+                draggable="false"
+                onmouseover="left.src='src/red_arrow_left.png'"
+                onmouseout="left.src='src/clear_arrow_left.png'"
+                onclick="changePage(-1)"
+            />
+            <img
+                src="src/clear_arrow_right.png"
+                id="right"
+                draggable="false"
+                onmouseover="right.src='src/red_arrow_right.png'"
+                onmouseout="right.src='src/clear_arrow_right.png'"
+                onclick="changePage(1)"
+            />
+        </div>
+    </body>
+    <script>
+        var page_count = 1;
+
+        var offsetWidth = Math.floor(getWidth() / 2 - 496 / 2);
+        var offsetHeight = Math.floor(getHeight() / 2 - 611 / 2);
+        page.style.marginLeft = offsetWidth + "px";
+        page.style.marginTop = offsetHeight + "px";
+
+        left.style.marginLeft = offsetWidth + 65 + "px";
+        left.style.marginTop = offsetHeight + 523 + "px";
+
+        right.style.marginLeft = offsetWidth + 352 + "px";
+        right.style.marginTop = offsetHeight + 523 + "px";
+
+        function changePage(increase) {
+            console.log("changing page: " + increase);
+            if (increase == -1 && page_count == 1) {
+                return;
+            }
+            if (increase == 1 && page_count == 4) {
+                return;
+            }
+
+            playSound();
+
+            page_count += increase;
+            console.log(page_count);
+            page.src = "src/page_" + page_count + ".png";
+        }
+
+        function playSound() {
+            const audio = new Audio("src/Page_turn1.ogg");
+            audio.play();
+        }
+
+        // Stolen from Stackoverflow https://stackoverflow.com/questions/1038727/how-to-get-browser-width-using-javascript-code
+        function getWidth() {
+            return Math.max(
+                document.body.scrollWidth,
+                document.documentElement.scrollWidth,
+                document.body.offsetWidth,
+                document.documentElement.offsetWidth,
+                document.documentElement.clientWidth
+            );
+        }
+
+        function getHeight() {
+            return Math.max(
+                document.body.scrollHeight,
+                document.documentElement.scrollHeight,
+                document.body.offsetHeight,
+                document.documentElement.offsetHeight,
+                document.documentElement.clientHeight
+            );
+        }
+    </script>
+</html>
