@@ -35,9 +35,9 @@
             earth.style.top = offsetHeight + earth_y + "px";
             moon.style.left = offsetWidth + earth_x + moon_x + "px";
             moon.style.top = offsetHeight + earth_y + moon_y + "px";
-            window.requestAnimationFrame(loop);
             earth_counter += 0.01;
             moon_counter += 0.02;
+            window.requestAnimationFrame(loop);
         }
 
         window.requestAnimationFrame(loop);
