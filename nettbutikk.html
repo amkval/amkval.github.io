@@ -11,10 +11,10 @@
     rel="stylesheet"
     href="https://fonts.googleapis.com/css2?family=Lato:wght@700&display=swap"
   />
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
-  />
+  <script
+    src="https://kit.fontawesome.com/ea762376de.js"
+    crossorigin="anonymous"
+  ></script>
   <link rel="shortcut icon" href="/kopperuds.ico" type="image/x-icon" />
   <style>
     body {
@@ -66,6 +66,12 @@
       border-radius: 10px;
       padding: 10px;
     }
+    .remove {
+      background-color: #d4af96;
+      border: 0px;
+      border-radius: 10px;
+      padding: 10px;
+    }
   </style>
   <body>
     <div class="header">
@@ -80,6 +86,7 @@
       </div>
       <div>
         <button style="width: 100px;">Login</button>
+        <button><i class="fa-solid fa-cart-shopping"></i></button>
       </div>
     </div>
     <table width="100%">
@@ -94,40 +101,48 @@
   </body>
 
   <script>
+    var cart = [];
     var products = [
       {
-        name: "uludag gazoz",
+        id: "0",
+        name: "Uludag Gazoz",
         img:
           "https://image.migros.ch/mo-boxed/v-w-480-h-360/e94a68324431c49dc8dcb2beb3e9c1c8c9156e02/uludag-gazoz.jpg",
         price: "99,00",
       },
       {
-        name: "hval melkesjokolade",
+        id: "1",
+        name: "Melkesjokolade",
         img:
           "https://hvalsjokolade.no/wp-content/uploads/2021/11/20211122-Hval-Sjokolade-Produkterbilder-Melkesjokolade-300g-e1637739637454.jpg",
         price: "99,00",
       },
       {
+        id: "2",
         name: "navn",
         img: "",
         price: "99,00",
       },
       {
+        id: "3",
         name: "navn",
         img: "",
         price: "99,00",
       },
       {
+        id: "4",
         name: "navn",
         img: "",
         price: "99,00",
       },
       {
+        id: "5",
         name: "navn",
         img: "",
         price: "99,00",
       },
       {
+        id: "6",
         name: "navn",
         img: "",
         price: "99,00",
@@ -135,33 +150,57 @@
     ];
 
     addProducts("");
-    addProducts("");
 
     search.oninput = function () {
-      addProducts(search.value);
       addProducts(search.value);
     };
 
     function addProducts(filter) {
       product_container.innerHTML = "";
       for (var key in products) {
-        if (products[key].name.includes(filter)) {
-          product_container.innerHTML +=
+        if (products[key].name.toLowerCase().includes(filter)) {
+          var temp = "";
+          temp +=
             "<div>" +
-            
             '<img src="' +
             products[key].img +
             '">' +
             "<p>kr " +
             products[key].price +
             "<p>" +
-            "<h3>" +
+            "<div><h3>" +
             products[key].name +
-            "</h3>" +
-            "<button>" + "Kjøp" + 
-            "</button></div>";
+            "</h3>";
+
+          if (cart.filter((e) => e.id == products[key].id).length > 0) {
+            temp +=
+              "<button class='remove' id='" +
+              key +
+              "'onclick='removeFromCart(this.id)'>Fjern</button></div>";
+          } else {
+            temp +=
+              "<button id='" +
+              key +
+              "'onclick='addToCart(this.id)'>Kjøp</button></div>";
+          }
+
+          temp += "</div>";
+
+          product_container.innerHTML += temp;
         }
       }
+    }
+
+    function addToCart(e) {
+      cart.push(products[e]);
+      console.log(cart);
+      addProducts("");
+    }
+
+    function removeFromCart(e) {
+      cart.pop(products[e]);
+      console.log(cart);
+      addProducts("");
     }
   </script>
 </html>
