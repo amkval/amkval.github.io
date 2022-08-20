@@ -72,6 +72,12 @@
       border-radius: 10px;
       padding: 10px;
     }
+    .reddot{
+      background-color: red;
+      width: 10px;
+      height: 10px;
+      border-radius: 5px;
+    }
   </style>
   <body>
     <div class="header">
@@ -84,9 +90,10 @@
           <i class="fa fa-search"></i>
         </button>
       </div>
-      <div>
+      <div style="position: relative">
         <button style="width: 100px;">Login</button>
         <button><i class="fa-solid fa-cart-shopping"></i></button>
+        <div id="hideme" class="reddot" style="position: absolute; top: 0px; right: 25px; visibility: hidden;"></div>
       </div>
     </div>
     <table width="100%">
@@ -98,6 +105,7 @@
         <td width="15%"></td>
       </tr>
     </table>
+    </div>
   </body>
 
   <script>
@@ -194,12 +202,20 @@
     function addToCart(e) {
       cart.push(products[e]);
       console.log(cart);
+      if(cart.length > 0)
+      {
+        hideme.style.visibility = "visible";
+      }
       addProducts("");
     }
 
     function removeFromCart(e) {
       cart.pop(products[e]);
       console.log(cart);
+      if(cart.length <= 0)
+      {
+        hideme.style.visibility = "hidden";
+      }
       addProducts("");
     }
   </script>
