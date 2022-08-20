@@ -17,50 +17,63 @@
   />
   <link rel="shortcut icon" href="/kopperuds.ico" type="image/x-icon" />
   <style>
-    .overskrift {
-      font-family: "Lato", sans-serif;
-      font-weight: bold;
-      color: #2da88e;
-      margin: 10px;
-    }
     body {
       font-family: "Lato", sans-serif;
     }
     .header {
       display: flex;
-      flex-wrap: nowrap;
       justify-content: space-between;
-      margin: 10px;
+      align-items: center;
+      color: #2da88e;
+      margin: 20px;
     }
-    .produkt {
-      border: #2da88e;
-      border-width: 3px;
-      flex: auto;
+    .header > div {
       text-align: center;
+      top: 50%;
     }
     .flex-container {
       display: flex;
       flex-wrap: nowrap;
-      background-color: #2da88e;
+      background-color: white;
     }
     .flex-container > div {
+      flex: auto;
+      text-align: center;
       background-color: whitesmoke;
-      width: 400px;
-      height: 600px;
+      width: 100px;
+      height: 330px;
       margin: 10px;
     }
     img {
-      width: 400px;
+      width: 150px;
+      height: 150px;
+    }
+    .searchbox{
+      height: 40px;
+      border-color: whitesmoke;
+      border-radius: 10px;
+      border-style: solid;
+      padding-left: 10px;
+    }
+    button{
+      background-color: #96d4c7;
+      border: 0px;
+      border-radius: 10px;
+      padding: 10px;
     }
   </style>
   <body>
     <div class="header">
-      <h1 class="overskrift">Kopperuds</h1>
       <div>
-        <input type="text" placeholder="Søk..." />
-        <button type="submit"><i class="fa fa-search"></i></button>
+        <h1>Kopperuds</h1>
       </div>
-      <button style="width: 100px;">Login</button>
+      <div>
+        <input class="searchbox" type="text" placeholder="Søk..." />
+        <button class="searchbox" type="submit"><i class="fa fa-search"></i></button>
+      </div>
+      <div>
+        <button style="width: 100px;">Login</button>
+      </div>
     </div>
     <div class="flex-container" id="product_container"></div>
   </body>
@@ -80,12 +93,27 @@
         price: "1000",
       },
       {
-        name: "Placeholder",
+        name: "Navn",
         img: "",
         price: "1 000 000",
       },
       {
-        name: "Placeholder",
+        name: "Navn",
+        img: "",
+        price: "1 000 000",
+      },
+      {
+        name: "Navn",
+        img: "",
+        price: "1 000 000",
+      },
+      {
+        name: "Navn",
+        img: "",
+        price: "1 000 000",
+      },
+      {
+        name: "Navn",
         img: "",
         price: "1 000 000",
       },
@@ -93,15 +121,15 @@
 
     for (var key in products) {
       product_container.innerHTML +=
-        '<div class="produkt"><h1>' +
+        '<div><h2>' +
         products[key].name +
-        "</h1>" +
+        "</h2>" +
         '<img src="' +
         products[key].img +
-        "\" height='300px'>" +
+        "\">" +
         "<p>" +
         products[key].price +
-        "<p>" +
+        "kr<p>" +
         "<button>Kjøp</button></div>";
     }
   </script>
