@@ -3,11 +3,62 @@
   <head>
     <title>Anders og Phillips megakule nettbutikk som er mye bedre enn din!</title>
   </head>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@700&display=swap" rel="stylesheet">
+<style>
+  .overskrift{
+    font-family: 'Lato', sans-serif;
+    font-weight: bold;
+    color: #2DA88E;
+  }
+  body{
+    font-family: 'Lato', sans-serif;
+  }
+  .produkt{
+    border: #2DA88E;
+    border-width: 3px;
+    flex: auto;
+    text-align: center;
+  }
+  .flex-container{
+    display: flex;
+    flex-wrap: nowrap;
+    background-color: #2DA88E;
+  }
+  .flex-container > div{
+    background-color: whitesmoke;
+    width: 400px;
+    height: 600px;
+    margin: 10px;
+  }
+  img{
+    width: 400px;
+  }
+</style>
   <body>
-    <p>Innhold som er megamyebedre enn ditt!</p>
-    <h1>Uludag Gazoz</h1>
-    <img src="https://image.migros.ch/mo-boxed/v-w-480-h-360/e94a68324431c49dc8dcb2beb3e9c1c8c9156e02/uludag-gazoz.jpg">
-    <h2>100 000 000 000 kr</h2>
-    <button>KJØP</button>
+    <h1 class="overskrift">Kopperuds</h1>
+    <select name="brus" id="brus">
+  <option value="volvo">Uludag Gazoz</option>
+  <option value="saab">Uludag Gazoz</option>
+  <option value="mercedes">Uludag Gazoz</option>
+  <option value="audi">Uludag Gazoz</option>
+</select>
+  <div class="flex-container">
+    <div class="produkt">
+      <h1>Uludag Gazoz</h1>
+      <img src="https://image.migros.ch/mo-boxed/v-w-480-h-360/e94a68324431c49dc8dcb2beb3e9c1c8c9156e02/uludag-gazoz.jpg">
+      <h2>100 000 000 000 kr</h2>
+      <button>KJØP</button>
+    </div>
+    <div class="produkt">
+      <h1>Hval Melkesjokolade</h1>
+      <img src="https://hvalsjokolade.no/wp-content/uploads/2021/11/20211122-Hval-Sjokolade-Produkterbilder-Melkesjokolade-300g-e1637739637454.jpg">
+      <h2>500 000 000 000 kr</h2>
+      <button>KJØP</button>
+    </div>
+    <div class="produkt"></div>
+    <div class="produkt"></div>
+  </div>
   </body>
 </html>
