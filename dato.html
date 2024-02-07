@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<head>
+    <style>
+        *{
+            text-align: center !important;
+        }
+    </style>
+</head>
+<body>
+    <h2>Input</h2>
+    <input type="date" id="date" name="date">
+    <h2>Aryansk kalender</h2>
+    <p id="aryansk"></p>
+    <h2>Commensk kalender</h2>
+    <p id="commensk"></p>
+    <h2>Fermansk kalender</h2>
+    <p id="fermansk"></p>
+    <h2>Latisk kalender</h2>
+    <p id="latisk"></p>
+    <h2>Salvatisk kalender</h2>
+    <p id="salvatisk"></p>
+<script>
+    date.valueAsDate = new Date();
+    calculate_dates();
+
+    date.onchange = function(){
+        calculate_dates();
+    };
+
+    function calculate_dates(){
+        let d = new Date(date.valueAsDate);
+        aryansk.innerHTML = aryansk_dato(d);
+        commensk.innerHTML = commensk_dato(d);
+        fermansk.innerHTML = gregoriansk_dato(d);
+        latisk.innerHTML = latisk_dato(d);
+        salvatisk.innerHTML = "idk. Det er vanskelig!"
+    }
+
+    function gregoriansk_dato(d){
+        return d.getUTCDate() +"."+ (d.getUTCMonth()+1) + "." + d.getUTCFullYear();
+    }
+
+    function aryansk_dato(d){
+        let a_months = ['Vassinx', 'Fazak', 'Jorzak', 'Luzak', 'Lyserik', 'Snezik', 'Hyzak'];
+        let a_vassinx_len = 53;
+        let a_month_len = 52;
+        
+        let a_year = d.getUTCFullYear() - 598;
+        let a_month;
+        let a_day = get_day(d);
+
+        if(is_leap(d.getUTCFullYear()))
+        {
+            a_vassinx_len++;
+        }
+
+        if (a_day <= a_vassinx_len){
+            a_month = a_months[0];
+        } else {
+            let i = 1;
+            a_day -= a_vassinx_len;
+            while(a_day > a_month_len){
+                i++;
+                a_day -= a_month_len;
+            }
+            a_month = a_months[i];
+        }
+
+        return a_day + " " + a_month + " " + a_year;
+    }
+
+    function commensk_dato(d){
+        return d.getUTCDate() +"."+ (d.getUTCMonth()+1) + "." + d.getUTCFullYear();
+    }
+
+    function latisk_dato(d){
+        var l_months = ['Primember', 'Secundember', 'Tertember', 'Quartember', 'Quintmber', 'Sextember', 'September', 'October','November','December', 'Undecember', 'Duodecember'];
+        let l_year = d.getUTCFullYear() - 598;
+        let l_day = get_day(d);
+        let l_month = (Math.floor(l_day/30)+1);
+        l_day = ((l_day-1)%30)+1;
+        if (l_month == 13){
+            l_month = 12;
+            l_day += 30;
+        }
+
+        return l_year + '-' + pad_string(l_month.toString()) + '-' + pad_string(l_day.toString()) + "<br> måned: " + l_months[l_month-1];
+    }
+
+    function is_leap(year){
+        if(((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0)){
+            console.log("Det er skuddår gutta!");
+          return true;
+        }
+        return false;
+    }
+
+    function get_day(d){
+        var day_length = 1000 * 60 * 60 * 24;
+        var start = new Date(d.getUTCFullYear(), 0, 0);
+        return Math.floor((d - start) / day_length);
+    }
+
+    function pad_string(string){
+        return string.padStart(2, '0');
+    }
+
+</script>
+</body>
+</html>
