@@ -1,27 +1,69 @@
 <!DOCTYPE html>
 <head>
     <style>
-        *{
-            text-align: center !important;
+        body{
+            background-color: whitesmoke;
+            font-family: "Tahoma";
+        }
+        .flex{
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            background-color: whitesmoke;
+        }
+        .flex > div {
+            background-color: #eee;
+            margin: 10px;
+            padding: 20px;
+            width: 500px;
+        }
+        .box{
+            display: flex;
+            align-items: center;
+        }
+        img{
+            margin-left: 10px;
+            border-bottom: black;
+            border: 1px solid;
+            border-radius: 10%;
+        }
+        img:active{
+            background-color: white;
         }
     </style>
 </head>
 <body>
-    <h2>Input</h2>
-    <input type="date" id="date" name="date">
-    <h2>Aryansk kalender</h2>
-    <p id="aryansk"></p>
-    <h2>Commensk kalender</h2>
-    <p id="commensk"></p>
-    <h2>Fermansk kalender</h2>
-    <p id="fermansk"></p>
-    <h2>Latisk kalender</h2>
-    <p id="latisk"></p>
-    <h2>Salvatisk kalender</h2>
-    <p id="salvatisk"></p>
+    <h1>Dato og tid</h1>
+    <hr>
+    <h2>Datokalkulator</h2>
+    Velg en dato 
+    <input type="date" id="date">
+    <p><small>Legg merke til at alle datoer følger UTC.</small></p>
+    <hr>
+    <div class="flex">
+        <div><b>Aryansk kalender</b><p id="aryansk"></p></div>
+        <div><b>Commensk kalender</b><p id="commensk"></p></div>
+        <div><b>Fermansk kalender</b><p id="fermansk"></p></div>
+        <div><b>Latisk kalender</b><p id="latisk"></p></div>
+        <div><b>Salvatisk kalender</b><p id="salvatisk"></p></div>
+    </div>
+    <hr>
+    <h2>Tidssoner</h2>
+    <div class="flex" id="tidssoner">
+    </div>
 <script>
+    // Setup date conversion
     date.valueAsDate = new Date();
     calculate_dates();
+
+    // Setup time zones
+    tidssoner.innerHTML += '<div><b>Imperium</b><p>' + format_time(-8) + "<p></div>";
+    tidssoner.innerHTML += '<div><b>Riguar</b><p>' + format_time(11) + "<p></div>"; 
+    tidssoner.innerHTML += '<div><b>Zalutt</b><p>' + format_time(7) + "<p></div>";
+    tidssoner.innerHTML += '<div><b>Reichs-Stat</b><p>' + format_time(8) + "<p></div>";
+    tidssoner.innerHTML += '<div><b>Notar Mouriz</b><p>' + format_time(9) + "<p></div>";
+    tidssoner.innerHTML += '<div><b>Caster</b><p>' + format_time(10) + "<p></div>";
+    tidssoner.innerHTML += '<div><b>Ankorr</b><p>' + format_time(11) + "<p></div>";
 
     date.onchange = function(){
         calculate_dates();
@@ -29,11 +71,40 @@
 
     function calculate_dates(){
         let d = new Date(date.valueAsDate);
-        aryansk.innerHTML = aryansk_dato(d);
-        commensk.innerHTML = commensk_dato(d);
-        fermansk.innerHTML = gregoriansk_dato(d);
-        latisk.innerHTML = latisk_dato(d);
-        salvatisk.innerHTML = "idk. Det er vanskelig!"
+        aryansk.innerHTML = "";
+        commensk.innerHTML = "";
+        fermansk.innerHTML = "";
+        latisk.innerHTML = "";
+        salvatisk.innerHTML = "";
+        buttonize(aryansk, aryansk_dato(d));
+        buttonize(commensk, commensk_dato(d));
+        buttonize(fermansk, gregoriansk_dato(d));
+        buttonize(latisk, latisk_dato(d, false));
+        buttonize(latisk, latisk_dato(d, true));
+        salvatisk.innerHTML = "Det er ingen som forstår hvordan det skal gjøres."
+    }
+
+    function buttonize(location, date){
+        let line = document.createElement("DIV");
+        line.class = "box";
+
+        let out = document.createElement("OUTPUT");
+        out.innerHTML = date;
+
+        let img = document.createElement("IMG");
+        img.src = "copy.svg";
+        img.width = "16";
+        img.height = "16";
+        img.onclick = (event) => copy_click(event);
+
+        line.append(out);
+        line.append(img);
+        location.append(line);
+    }
+
+    function copy_click(e){
+        let out = e.target.parentNode.firstChild;
+        navigator.clipboard.writeText(out.value);
     }
 
     function gregoriansk_dato(d){
@@ -66,14 +137,14 @@
             a_month = a_months[i];
         }
 
-        return a_day + " " + a_month + " " + a_year;
+        return a_day + ". " + a_month + " " + a_year;
     }
 
     function commensk_dato(d){
         return d.getUTCDate() +"."+ (d.getUTCMonth()+1) + "." + d.getUTCFullYear();
     }
 
-    function latisk_dato(d){
+    function latisk_dato(d, alt){
         var l_months = ['Primember', 'Secundember', 'Tertember', 'Quartember', 'Quintmber', 'Sextember', 'September', 'October','November','December', 'Undecember', 'Duodecember'];
         let l_year = d.getUTCFullYear() - 598;
         let l_day = get_day(d);
@@ -84,13 +155,20 @@
             l_day += 30;
         }
 
-        return l_year + '-' + pad_string(l_month.toString()) + '-' + pad_string(l_day.toString()) + "<br> måned: " + l_months[l_month-1];
+        let alt1 = l_year + '-' + pad_string(l_month.toString()) + '-' + pad_string(l_day.toString());
+        let alt2 = pad_string(l_day.toString()) + ". " + l_months[l_month-1] + " " + l_year;
+
+        if (alt)
+        {
+            return alt2;
+        }
+        return  alt1;
     }
 
     function is_leap(year){
         if(((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0)){
             console.log("Det er skuddår gutta!");
-          return true;
+            return true;
         }
         return false;
     }
@@ -105,6 +183,15 @@
         return string.padStart(2, '0');
     }
 
+    function format_time(time_zone){
+        let td = new Date();
+        let th = td.getUTCHours() + time_zone;
+        if(th > 23) th -= 24;
+        if(th < 0) th += 24;
+        let thf = pad_string(th.toString());
+        let tm = pad_string(td.getUTCMinutes().toString());
+        return thf + ":" + tm;
+    }
 </script>
 </body>
 </html>
