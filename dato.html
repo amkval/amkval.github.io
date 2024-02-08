@@ -43,7 +43,7 @@
     <div class="flex">
         <div><b>Aryansk kalender</b><p id="aryansk"></p></div>
         <div><b>Commensk kalender</b><p id="commensk"></p></div>
-        <div><b>Fermansk kalender</b><p id="fermansk"></p></div>
+        <div><b>Fermanske kalender</b><p id="fermansk"></p></div>
         <div><b>Latisk kalender</b><p id="latisk"></p></div>
         <div><b>Salvatisk kalender</b><p id="salvatisk"></p></div>
     </div>
@@ -91,6 +91,7 @@
         salvatisk.innerHTML = "";
         buttonize(aryansk, aryansk_dato(d));
         buttonize(commensk, commensk_dato(d));
+        buttonize(commensk, gammel_commensk_dato(d));
         buttonize(fermansk, gregoriansk_dato(d));
         buttonize(latisk, latisk_dato(d, false));
         buttonize(latisk, latisk_dato(d, true));
@@ -121,7 +122,7 @@
     }
 
     function gregoriansk_dato(d){
-        return d.getUTCDate() +"."+ (d.getUTCMonth()+1) + "." + d.getUTCFullYear();
+        return pad_string(d.getUTCDate().toString()) +"."+ pad_string((d.getUTCMonth()+1).toString()) + "." + d.getUTCFullYear();
     }
 
     function aryansk_dato(d){
@@ -154,7 +155,11 @@
     }
 
     function commensk_dato(d){
-        return d.getUTCDate() +"."+ (d.getUTCMonth()+1) + "." + d.getUTCFullYear();
+        return pad_string(d.getUTCDate().toString()) +"."+ pad_string((d.getUTCMonth()+1).toString()) + "." + d.getUTCFullYear();
+    }
+
+    function gammel_commensk_dato(d){
+        return pad_string(d.getUTCDate().toString()) +"."+ pad_string((d.getUTCMonth()+1).toString()) + "." + (d.getUTCFullYear() + 5508);
     }
 
     function latisk_dato(d, alt){
