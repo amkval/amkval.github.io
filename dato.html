@@ -36,7 +36,7 @@
     <h1>Dato og tid</h1>
     <hr>
     <h2>Datokalkulator</h2>
-    Velg en dato 
+    Velg dato 
     <input type="date" id="date">
     <p><small>Legg merke til at alle datoer følger UTC.</small></p>
     <hr>
@@ -49,25 +49,38 @@
     </div>
     <hr>
     <h2>Tidssoner</h2>
+    Velg tid
+    <input type="time" id="time">
     <div class="flex" id="tidssoner">
     </div>
 <script>
     // Setup date conversion
     date.valueAsDate = new Date();
     calculate_dates();
-
-    // Setup time zones
-    tidssoner.innerHTML += '<div><b>Imperium</b><p>' + format_time(-8) + "<p></div>";
-    tidssoner.innerHTML += '<div><b>Riguar</b><p>' + format_time(11) + "<p></div>"; 
-    tidssoner.innerHTML += '<div><b>Zalutt</b><p>' + format_time(7) + "<p></div>";
-    tidssoner.innerHTML += '<div><b>Reichs-Stat</b><p>' + format_time(8) + "<p></div>";
-    tidssoner.innerHTML += '<div><b>Notar Mouriz</b><p>' + format_time(9) + "<p></div>";
-    tidssoner.innerHTML += '<div><b>Caster</b><p>' + format_time(10) + "<p></div>";
-    tidssoner.innerHTML += '<div><b>Ankorr</b><p>' + format_time(11) + "<p></div>";
-
     date.onchange = function(){
         calculate_dates();
     };
+
+    // Setup time zones
+    time.value = new Date().toISOString().substring(11, 16);
+    calculate_times();
+    time.onchange = function(){
+        calculate_times();
+    };
+    
+
+    function calculate_times(){
+        let city_time_pairs = [["Imperium", -8], ["Venedig", -8],["Zargon", -3], ["Riguar", -2], ["Zalutt", 7], 
+        ["Reichs-Stat", 8], ["Arikz Ruzuv", 9], ["Caster", 10], ["Ankorr", 11], ["Folvik", 11]];
+
+        tidssoner.innerHTML = "";
+        let td = new Date(time.valueAsDate);
+        city_time_pairs.forEach((x) => {tidssoner.innerHTML += create_time_element(...x, td);});
+    }
+
+    function create_time_element(name, time_zone, td){
+        return `<div><b>${name}</b><p>${format_time(time_zone, td)}<p></div>`
+    }
 
     function calculate_dates(){
         let d = new Date(date.valueAsDate);
@@ -145,7 +158,7 @@
     }
 
     function latisk_dato(d, alt){
-        var l_months = ['Primember', 'Secundember', 'Tertember', 'Quartember', 'Quintmber', 'Sextember', 'September', 'October','November','December', 'Undecember', 'Duodecember'];
+        var l_months = ['primember', 'secundember', 'tertember', 'quartember', 'quintmber', 'sextember', 'september', 'octember','november','december', 'undecember', 'duodecember'];
         let l_year = d.getUTCFullYear() - 598;
         let l_day = get_day(d);
         let l_month = (Math.floor(l_day/30)+1);
@@ -183,8 +196,7 @@
         return string.padStart(2, '0');
     }
 
-    function format_time(time_zone){
-        let td = new Date();
+    function format_time(time_zone, td){
         let th = td.getUTCHours() + time_zone;
         if(th > 23) th -= 24;
         if(th < 0) th += 24;
