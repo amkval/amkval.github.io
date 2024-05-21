@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            background-color: whitesmoke;
+            font-family: "Tahoma";
+        }
+
+        .flex {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            background-color: whitesmoke;
+        }
+
+        .flex>div {
+            background-color: #eee;
+            margin: 10px;
+            padding: 20px;
+            width: 500px;
+        }
+
+        .box {
+            display: flex;
+            align-items: center;
+        }
+
+        img {
+            margin-left: 10px;
+            border-bottom: black;
+            border: 1px solid;
+            border-radius: 10%;
+        }
+
+        img:active {
+            background-color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Dato og tid</h1>
+    <hr>
+    <h2>Datokalkulator</h2>
+    Velg dato
+    <input type="date" id="date">
+    <p><small>Legg merke til at alle datoer følger UTC.</small></p>
+    <hr>
+    <div class="flex">
+        <div><b>Aryansk kalender</b>
+            <p id="aryansk"></p>
+        </div>
+        <div><b>Commensk kalender</b>
+            <p id="commensk"></p>
+        </div>
+        <div><b>Fermanske kalender</b>
+            <p id="fermansk"></p>
+        </div>
+        <div><b>Latisk kalender</b>
+            <p id="latisk"></p>
+        </div>
+        <div><b>Salvatisk kalender</b>
+            <p id="salvatisk"></p>
+        </div>
+    </div>
+    <hr>
+    <h2>Tidssoner</h2>
+    Velg tid
+    <input type="time" id="time">
+    <div class="flex" id="tidssoner">
+    </div>
+    <script>
+        // Setup date conversion
+        date.valueAsDate = new Date();
+        calculate_dates();
+        date.onchange = function () {
+            calculate_dates();
+        };
+
+        // Setup time zones
+        time.value = new Date().toISOString().substring(11, 16);
+        calculate_times();
+        time.onchange = function () {
+            calculate_times();
+        };
+
+
+        function calculate_times() {
+            let city_time_pairs = [["Imperium", -8], ["Venedig", -8], ["Zargon", -3], ["Riguar", -2], ["Zalutt", 7],
+            ["Reichs-Stat", 8], ["Arikz Ruzuv", 9], ["Caster", 10], ["Ankorr", 11], ["Folvik", 11]];
+
+            tidssoner.innerHTML = "";
+            let td = new Date(time.valueAsDate);
+            city_time_pairs.forEach((x) => { tidssoner.innerHTML += create_time_element(...x, td); });
+        }
+
+        function create_time_element(name, time_zone, td) {
+            return `<div><b>${name}</b><p>${format_time(time_zone, td)}<p></div>`
+        }
+
+        function calculate_dates() {
+            let d = new Date(date.valueAsDate);
+            aryansk.innerHTML = "";
+            commensk.innerHTML = "";
+            fermansk.innerHTML = "";
+            latisk.innerHTML = "";
+            salvatisk.innerHTML = "";
+            buttonize(aryansk, aryansk_dato(d));
+            buttonize(commensk, commensk_dato(d));
+            buttonize(commensk, gammel_commensk_dato(d));
+            buttonize(fermansk, gregoriansk_dato(d));
+            buttonize(latisk, latisk_dato(d, false));
+            buttonize(latisk, latisk_dato(d, true));
+            salvatisk.innerHTML = "Det er ingen som forstår hvordan det skal gjøres."
+        }
+
+        function buttonize(location, date) {
+            let line = document.createElement("DIV");
+            line.class = "box";
+
+            let out = document.createElement("OUTPUT");
+            out.innerHTML = date;
+
+            let img = document.createElement("IMG");
+            img.src = "copy.svg";
+            img.width = "16";
+            img.height = "16";
+            img.onclick = (event) => copy_click(event);
+
+            line.append(out);
+            line.append(img);
+            location.append(line);
+        }
+
+        function copy_click(e) {
+            let out = e.target.parentNode.firstChild;
+            navigator.clipboard.writeText(out.value);
+        }
+
+        function gregoriansk_dato(d) {
+            return pad_string(d.getUTCDate().toString()) + "." + pad_string((d.getUTCMonth() + 1).toString()) + "." + d.getUTCFullYear();
+        }
+
+        function aryansk_dato(d) {
+            let a_months = ['Vassinx', 'Fazak', 'Jorzak', 'Luzak', 'Lyserik', 'Snezik', 'Hyzak'];
+            let a_vassinx_len = 53;
+            let a_month_len = 52;
+
+            let a_year = d.getUTCFullYear() - 598;
+            let a_month;
+            let a_day = get_day(d);
+
+            if (is_leap(d.getUTCFullYear())) {
+                a_vassinx_len++;
+            }
+
+            if (a_day <= a_vassinx_len) {
+                a_month = a_months[0];
+            } else {
+                let i = 1;
+                a_day -= a_vassinx_len;
+                while (a_day > a_month_len) {
+                    i++;
+                    a_day -= a_month_len;
+                }
+                a_month = a_months[i];
+            }
+
+            return a_day + ". " + a_month + " " + a_year;
+        }
+
+        function commensk_dato(d) {
+            return pad_string(d.getUTCDate().toString()) + "." + pad_string((d.getUTCMonth() + 1).toString()) + "." + d.getUTCFullYear();
+        }
+
+        function gammel_commensk_dato(d) {
+            return pad_string(d.getUTCDate().toString()) + "." + pad_string((d.getUTCMonth() + 1).toString()) + "." + (d.getUTCFullYear() + 5508);
+        }
+
+        function latisk_dato(d, alt) {
+            var l_months = ['primember', 'secundember', 'tertember', 'quartember', 'quintmber', 'sextember', 'september', 'octember', 'november', 'december', 'undecember', 'duodecember'];
+            let l_year = d.getUTCFullYear() - 598;
+            let l_day = get_day(d);
+            let l_month = (Math.floor(l_day / 30) + 1);
+            l_day = ((l_day - 1) % 30) + 1;
+            if (l_month == 13) {
+                l_month = 12;
+                l_day += 30;
+            }
+
+            let alt1 = l_year + '-' + pad_string(l_month.toString()) + '-' + pad_string(l_day.toString());
+            let alt2 = pad_string(l_day.toString()) + ". " + l_months[l_month - 1] + " " + l_year;
+
+            if (alt) {
+                return alt2;
+            }
+            return alt1;
+        }
+
+        function is_leap(year) {
+            if (((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0)) {
+                console.log("Det er skuddår gutta!");
+                return true;
+            }
+            return false;
+        }
+
+        function get_day(d) {
+            var day_length = 1000 * 60 * 60 * 24;
+            var start = new Date(d.getUTCFullYear(), 0, 0);
+            return Math.floor((d - start) / day_length);
+        }
+
+        function pad_string(string) {
+            return string.padStart(2, '0');
+        }
+
+        function format_time(time_zone, td) {
+            let th = td.getUTCHours() + time_zone;
+            if (th > 23) th -= 24;
+            if (th < 0) th += 24;
+            let thf = pad_string(th.toString());
+            let tm = pad_string(td.getUTCMinutes().toString());
+            return thf + ":" + tm;
+        }
+    </script>
+</body>
+
+</html>
