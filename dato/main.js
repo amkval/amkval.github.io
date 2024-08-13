@@ -176,7 +176,7 @@ function latisk_dato(d, alt) {
   ];
   let l_year = d.getUTCFullYear() - 598;
   let l_day = get_day(d);
-  let l_month = Math.floor(l_day / 30) + 1;
+  let l_month = Math.floor((l_day-1) / 30) + 1;
   l_day = ((l_day - 1) % 30) + 1;
   if (l_month == 13) {
     l_month = 12;
