@@ -228,8 +228,59 @@ function latisk_dato(d) {
   return { year: year, month: month, day: days_since + 1};
 }
 
-function salvatisk_dato(_d) {
-  return "Det er ingen som forstår hvordan det skal gjøres.";
+function salvatisk_dato(d) {
+  const start_date = new Date("2024-01-01");
+  let days_since = Math.floor((d - start_date) / (1000 * 60 * 60 * 24));
+  let year = 1426;
+  let month = 1;
+
+  // Finn aryansk år for skuddår.
+  while (days_since < 0) {
+    year--;
+    days_since += is_leap(year) ? 366 : 365;
+  }
+
+  while (days_since >= (is_leap(year) ? 366 : 365)) {
+    days_since -= is_leap(year) ? 366 : 365;
+    year++;
+  }
+
+  // Finn latisk måned
+  while (month <= 11 && days_since >= 30)
+  {
+    days_since -= 30;
+    month++;
+  }
+
+  // Finn salvatisk år
+  const months = ["A", "R", "K", "O", "X", "G", "E", "T"];
+  var t_index = 0;
+  const reign_start = [35, 41, 26, 41, 28, 20, 2, 0]
+  const reign_stop = [100, 85, 75, 52, 57, 42, 33, 4];
+  var base_year = 39;
+
+  var i_year = year;
+
+  if (i_year > 1426)
+  {
+    base_year += (i_year - 1426);
+  }
+
+  while (i_year++ < 1426)
+  {
+    if (base_year > reign_start[t_index]) {
+      base_year--;
+    } else {
+      t_index++;
+      base_year = reign_stop[t_index];
+    }
+  }
+
+  if (t_index >= months.length)
+  {
+    return "Før verden ble skapt.";
+  }
+  return (days_since + 1) + "." + month + "." + base_year + months[t_index];
 }
 
 function is_leap(year) {
