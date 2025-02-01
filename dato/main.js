@@ -43,7 +43,7 @@ function calculate_dates() {
     ["Aryansk kalender", [aryansk_dato(d)]],
     ["Commensk kalender", [commensk_dato(d), gammel_commensk_dato(d)]],
     ["Fermansk kalender", [fermansk_dato(d)]],
-    ["Latisk kalender", [latisk_dato(d, false), latisk_dato(d, true)]],
+    ["Latisk kalender", [latisk_dato_format_1(d), latisk_dato_format_2(d)]],
     ["Salvatisk kalender", [salvatisk_dato(d)]],
   ];
 
@@ -104,6 +104,31 @@ function fermansk_dato(d) {
 }
 
 function aryansk_dato(d) {
+  const start_date = new Date("2024-01-01");
+  let days_since = Math.floor((d - start_date) / (1000 * 60 * 60 * 24));
+
+  let year = 1426;
+  let month = 1;
+
+  // Find current year
+  while (days_since < 0) {
+    year--;
+    days_since += is_leap(year) ? 366 : 365;
+  }
+
+  while (days_since >= (is_leap(year) ? 366 : 365)) {
+    days_since -= is_leap(year) ? 366 : 365;
+    year++;
+  }
+
+  // Month lengths vary based on leap years
+  let a_vassinx_len = 53;
+  let a_month_len = 52;
+
+  if (is_leap(year)) {
+    a_vassinx_len++;
+  }
+
   let a_months = [
     "Vassinx",
     "Fazak",
@@ -113,30 +138,20 @@ function aryansk_dato(d) {
     "Snezik",
     "Hyzak",
   ];
-  let a_vassinx_len = 53;
-  let a_month_len = 52;
 
-  let a_year = d.getUTCFullYear() - 598;
-  let a_month;
-  let a_day = get_day(d);
-
-  if (is_leap(d.getUTCFullYear())) {
-    a_vassinx_len++;
-  }
-
-  if (a_day <= a_vassinx_len) {
-    a_month = a_months[0];
+  if (days_since < a_vassinx_len) {
+    month = a_months[0];
   } else {
     let i = 1;
-    a_day -= a_vassinx_len;
-    while (a_day > a_month_len) {
+    days_since -= a_vassinx_len;
+    while (days_since >= a_month_len) {
       i++;
-      a_day -= a_month_len;
+      days_since -= a_month_len;
     }
-    a_month = a_months[i];
+    month = a_months[i];
   }
 
-  return a_day + ". " + a_month + " " + a_year;
+  return (days_since + 1) + ". " + month + " " + year;
 }
 
 function commensk_dato(d) {
@@ -159,8 +174,14 @@ function gammel_commensk_dato(d) {
   );
 }
 
-function latisk_dato(d, alt) {
-  var l_months = [
+function latisk_dato_format_1(d) {
+  let dato = latisk_dato(d);
+
+  return dato.year + "-" + pad_string(dato.month.toString()) + "-" + pad_string(dato.day.toString());
+}
+
+function latisk_dato_format_2(d) {
+  var months = [
     "primember",
     "secundember",
     "tertember",
@@ -174,28 +195,37 @@ function latisk_dato(d, alt) {
     "undecember",
     "duodecember",
   ];
-  let l_year = d.getUTCFullYear() - 598;
-  let l_day = get_day(d);
-  let l_month = Math.floor((l_day-1) / 30) + 1;
-  l_day = ((l_day - 1) % 30) + 1;
-  if (l_month == 13) {
-    l_month = 12;
-    l_day += 30;
+
+  let dato = latisk_dato(d);
+  return pad_string(dato.day.toString()) + ". " + months[dato.month - 1] + " " + dato.year;
+}
+
+function latisk_dato(d) {
+  const start_date = new Date("2024-01-01");
+  let days_since = Math.floor((d - start_date) / (1000 * 60 * 60 * 24));
+  
+  let year = 1111;
+  let month = 1;
+
+  // Find current year
+  while (days_since < 0) {
+    year--;
+    days_since += is_leap(year) ? 366 : 365;
   }
 
-  let alt1 =
-    l_year +
-    "-" +
-    pad_string(l_month.toString()) +
-    "-" +
-    pad_string(l_day.toString());
-  let alt2 =
-    pad_string(l_day.toString()) + ". " + l_months[l_month - 1] + " " + l_year;
-
-  if (alt) {
-    return alt2;
+  while (days_since >= (is_leap(year) ? 366 : 365)) {
+    days_since -= is_leap(year) ? 366 : 365;
+    year++;
   }
-  return alt1;
+
+  // Find current month
+  while (month <= 11 && days_since >= 30)
+  {
+    days_since -= 30;
+    month++;
+  }
+
+  return { year: year, month: month, day: days_since + 1};
 }
 
 function salvatisk_dato(_d) {

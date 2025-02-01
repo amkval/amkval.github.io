@@ -2,21 +2,26 @@
 <html>
   <head>
     <link rel="stylesheet" href="styles.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body>
-    <h1>Dato og tid</h1>
-    <hr />
-    <h2>Datokalkulator</h2>
-    Velg dato
-    <input type="date" id="date" />
-    <p><small>Legg merke til at alle datoer følger UTC.</small></p>
-    <hr />
-    <div class="flex" id="kalendere"></div>
-    <hr />
-    <h2>Tidssoner</h2>
-    Velg tid
-    <input type="time" id="time" />
-    <div class="flex" id="tidssoner"></div>
+    <div class="header">
+      <div class="content">
+        <h1>Dato og Tid</h1>
+      </div>
+    </div>
+    <div class="content">
+      <h1>Datokalkulator</h1>
+      Velg dato
+      <input type="date" id="date" />
+      <p><small>Legg merke til at alle datoer følger UTC.</small></p>
+      <div class="flex" id="kalendere"></div>
+      <h1>Tidssoner</h1>
+      Velg tid
+      <input type="time" id="time" />
+      <p><small>Legg merke til at alle tider følger UTC.</small></p>
+      <div class="flex" id="tidssoner"></div>
+    </div>
     <script src="main.js"></script>
   </body>
 </html>

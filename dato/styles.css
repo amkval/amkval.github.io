@@ -1,6 +1,24 @@
 body {
   background-color: whitesmoke;
-  font-family: "Tahoma";
+  font-family: "verdana";
+  margin: 0px;
+}
+
+.header {
+  background-color: #0B3954;
+  color: whitesmoke;
+  margin: 0px;
+  padding: 0px;
+  height: 75px;
+  align-content: center;
+}
+
+.content {
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 .flex {
@@ -8,18 +26,14 @@ body {
   flex-direction: row;
   flex-wrap: wrap;
   background-color: whitesmoke;
+  /* justify-content: center; */
 }
 
 .flex > div {
-  background-color: #eee;
+  background-color: white;
   margin: 10px;
   padding: 20px;
-  width: 500px;
-}
-
-.box {
-  display: flex;
-  align-items: center;
+  width: 380px;
 }
 
 img {
@@ -30,5 +44,5 @@ img {
 }
 
 img:active {
-  background-color: white;
+  background-color: whitesmoke;
 }
